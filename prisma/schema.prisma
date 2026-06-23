@@ -1,0 +1,92 @@
+// RealTimeResume data model (v1, no AI).
+// Dev provider is SQLite for zero-config local/CI runs. For production, switch
+// `provider` to "postgresql" and point DATABASE_URL at managed Postgres.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  goal         String? // recent-grad | career-change | returning-parent | level-up
+  createdAt    DateTime @default(now())
+
+  activities Activity[]
+  skills     Skill[]
+  resumes    ResumeVersion[]
+  journal    JournalEntry[]
+}
+
+model Activity {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  description String
+  occurredAt  DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  user   User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skills ActivitySkill[]
+
+  @@index([userId])
+}
+
+model Skill {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  category  String? // e.g. "Leadership", "Technical", "Communication"
+  createdAt DateTime @default(now())
+
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activities ActivitySkill[]
+
+  // A user can only have one skill of a given name.
+  @@unique([userId, name])
+  @@index([userId])
+}
+
+model ActivitySkill {
+  id          String @id @default(cuid())
+  activityId  String
+  skillId     String
+  proficiency Int    @default(3) // 1..5
+
+  activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  skill    Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([activityId, skillId])
+  @@index([skillId])
+}
+
+model ResumeVersion {
+  id         String   @id @default(cuid())
+  userId     String
+  title      String
+  targetRole String?
+  content    String // Markdown
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model JournalEntry {
+  id        String   @id @default(cuid())
+  userId    String
+  content   String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
