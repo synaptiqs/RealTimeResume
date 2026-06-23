@@ -13,8 +13,17 @@
 | v1 scope | **Web MVP first** (mobile later) |
 | Stack | **Next.js 15 + TypeScript + Tailwind**, Prisma + SQLite (→ Postgres in prod) |
 | Auth | Session cookies, `bcryptjs` password hashing, `jose`-signed JWT |
-| **AI** | **Excluded from this version.** No LLM/Claude integration. Skill suggestion is a deterministic keyword dictionary; resume generation is template-based. AI is a documented future milestone behind a clean interface. |
+| **AI** | **Excluded from this version.** No LLM/Claude integration. Skill suggestion is a deterministic keyword dictionary; resume/timesheet generation is template-based. **Enhanced AI features ship in a later update behind a paywall**, once engagement is gauged. |
+| Hosting | **AWS** (App Runner + RDS PostgreSQL); domain registered via **Bluehost** (DNS → AWS). See `DEPLOY.md`. |
 | How far now | **Build v1 end-to-end with tests, then push** |
+
+## Phasing
+
+- **Phase 0 (this version):** manual, deterministic tooling — activity tracking,
+  skills, resume generation, **timesheet generation**, and journaling notes. Free.
+- **Next update:** enhanced AI features (AI skill extraction, journaling
+  assistant, AI resume/timesheet writing) **behind a paywall**, added behind the
+  existing interfaces after measuring engagement.
 
 ## What v1 (this slice) delivers — no enhanced AI
 
@@ -30,7 +39,9 @@ end to end on the web, using **deterministic logic only** (no LLM):
 5. **Resume generation (template)** — assemble an ATS-friendly Markdown resume
    (summary, skills, experience bullets) from the user's activities + skills using a
    deterministic template. Store versions; view as Markdown.
-6. **Journal** — plain dated notes (no assistant).
+6. **Timesheet generation** — log hours (date, project, description) and
+   generate a timesheet report (Markdown + CSV export, totals by project).
+7. **Journal** — plain dated notes (no assistant).
 
 ### Explicitly out of this version
 
@@ -82,13 +93,14 @@ prisma/schema.prisma User, Activity, Skill, ActivitySkill, ResumeVersion, Journa
   suggester, skill aggregation, auth hashing/JWT, and template resume assembly.
 - **Build:** `npm run build` (`prisma generate` + `next build`).
 - **CI:** GitHub Actions runs typecheck → test → build on every push/PR.
-- **Ship:** deploy to Vercel (swap `DATABASE_URL` to managed Postgres, set
-  `AUTH_SECRET`). Mobile + integrations + AI are follow-on milestones.
+- **Ship:** deploy to **AWS** (App Runner + RDS PostgreSQL) via the Docker
+  image; domain through Bluehost. Full steps in `DEPLOY.md`.
 
 ## Roadmap beyond v1
 
-1. **Enhanced AI (deferred this version):** Claude-powered skill extraction,
-   journaling assistant, and resume writing behind the existing interfaces.
+1. **Enhanced AI (deferred, behind a paywall):** Claude-powered skill
+   extraction, journaling assistant, and resume/timesheet writing behind the
+   existing interfaces — gated as a paid tier after gauging engagement.
 2. Real-time sync (websockets / SSE) and optimistic UI.
 3. Voice input + the 30-second logging flow from the wiki.
 4. Job-board integrations (ZipRecruiter / Indeed / LinkedIn).

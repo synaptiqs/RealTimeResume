@@ -17,7 +17,12 @@ the skills behind it, and generate a resume from your history.
   suggestions; skills aggregate across activities with proficiency.
 - **Resume generation** — assemble a Markdown resume from your activities and
   skills; keep multiple versions; copy to clipboard.
+- **Timesheet generation** — log hours (date, project, description) and generate
+  a timesheet report with totals by project; export as Markdown or CSV.
 - **Journal** — plain dated notes to capture achievements.
+
+> AI-assisted versions of these (skill extraction, journaling assistant, AI
+> resume/timesheet writing) are planned for a later update behind a paid tier.
 
 ## Tech stack
 
@@ -69,12 +74,13 @@ src/app/                 Pages (landing, auth, dashboard, activities, skills, re
 tests/                   Vitest unit/integration tests for the pure logic
 ```
 
-## Production deployment
+## Production deployment (AWS)
 
-1. Switch the Prisma datasource `provider` to `postgresql` and point
-   `DATABASE_URL` at managed Postgres.
-2. Set a strong `AUTH_SECRET`.
-3. `npm run build && npm start` (or deploy to Vercel).
+The app ships as a Docker image (Next.js standalone output). The recommended
+target is **AWS App Runner + RDS PostgreSQL**, with the domain pointed from
+**Bluehost** DNS. Full step-by-step instructions — switching Prisma to Postgres,
+building/pushing to ECR, the VPC connector, and the Bluehost DNS records — are in
+[`DEPLOY.md`](./DEPLOY.md).
 
 ## Roadmap
 

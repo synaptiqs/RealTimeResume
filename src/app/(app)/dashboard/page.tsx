@@ -3,19 +3,22 @@ import { requireUser } from "@/lib/auth";
 import { listActivities } from "@/lib/activities";
 import { getAggregatedSkills } from "@/lib/skills";
 import { listResumes } from "@/lib/resume";
+import { listTimeEntries } from "@/lib/timesheet";
 
 export default async function DashboardPage() {
   const user = await requireUser();
-  const [activities, skills, resumes] = await Promise.all([
+  const [activities, skills, resumes, timeEntries] = await Promise.all([
     listActivities(user.id),
     getAggregatedSkills(user.id),
     listResumes(user.id),
+    listTimeEntries(user.id),
   ]);
 
   const stats = [
     { label: "Activities", value: activities.length, href: "/activities" },
     { label: "Skills", value: skills.length, href: "/skills" },
     { label: "Resumes", value: resumes.length, href: "/resume" },
+    { label: "Time entries", value: timeEntries.length, href: "/timesheet" },
   ];
 
   return (
@@ -27,7 +30,7 @@ export default async function DashboardPage() {
         Keep logging what you do — it all adds up to your resume.
       </p>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-3">
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s) => (
           <Link key={s.label} href={s.href} className="card hover:shadow-md">
             <div className="text-3xl font-bold text-brand-600">{s.value}</div>

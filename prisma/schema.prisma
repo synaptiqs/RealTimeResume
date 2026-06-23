@@ -19,10 +19,11 @@ model User {
   goal         String? // recent-grad | career-change | returning-parent | level-up
   createdAt    DateTime @default(now())
 
-  activities Activity[]
-  skills     Skill[]
-  resumes    ResumeVersion[]
-  journal    JournalEntry[]
+  activities  Activity[]
+  skills      Skill[]
+  resumes     ResumeVersion[]
+  journal     JournalEntry[]
+  timeEntries TimeEntry[]
 }
 
 model Activity {
@@ -89,4 +90,18 @@ model JournalEntry {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+model TimeEntry {
+  id          String   @id @default(cuid())
+  userId      String
+  date        DateTime // the day the work happened
+  hours       Float
+  project     String? // optional project / client grouping
+  description String
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
 }
