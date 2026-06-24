@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { getAggregatedSkills } from "@/lib/skills";
+import { computeResumeScore, type ResumeScore } from "@/lib/score";
 import {
   buildResumeMarkdown,
   defaultResumeTitle,
@@ -8,14 +9,17 @@ import {
 
 /**
  * Generate a resume for the user from their stored activities and skills using
- * the deterministic template (no AI), and persist it as a ResumeVersion.
+ * the deterministic template (no AI), score it against the target job, and
+ * persist it as a ResumeVersion.
  */
 export async function generateResume(
   userId: string,
-  opts: { targetRole?: string } = {},
+  opts: { targetJob?: string } = {},
 ) {
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) throw new Error("User not found");
+
+  const targetJob = opts.targetJob?.trim() || null;
 
   const [activities, skills] = await Promise.all([
     prisma.activity.findMany({
@@ -36,19 +40,56 @@ export async function generateResume(
   const content = buildResumeMarkdown({
     name: user.name,
     goal: user.goal,
-    targetRole: opts.targetRole ?? null,
+    targetRole: targetJob,
     skills,
     activities: activityInputs,
+  });
+
+  const strength = computeResumeScore({
+    targetJob,
+    skills: skills.map((s) => ({
+      name: s.name,
+      proficiency: s.proficiency,
+      activityCount: s.activityCount,
+    })),
+    activityCount: activities.length,
   });
 
   return prisma.resumeVersion.create({
     data: {
       userId,
-      title: defaultResumeTitle(opts.targetRole),
-      targetRole: opts.targetRole?.trim() || null,
+      title: defaultResumeTitle(targetJob),
+      targetRole: targetJob,
+      targetJob,
       content,
+      score: strength.score,
+      skillsMatch: strength.skillsMatch,
+      ats: strength.ats,
+      keywords: strength.keywords,
+      format: strength.format,
     },
   });
+}
+
+/** Live Resume Strength for the dashboard / builder, computed from current data. */
+export async function getResumeStrength(
+  userId: string,
+  targetJob?: string | null,
+): Promise<ResumeScore & { targetJob: string | null }> {
+  const [activityCount, skills] = await Promise.all([
+    prisma.activity.count({ where: { userId } }),
+    getAggregatedSkills(userId),
+  ]);
+  const score = computeResumeScore({
+    targetJob,
+    skills: skills.map((s) => ({
+      name: s.name,
+      proficiency: s.proficiency,
+      activityCount: s.activityCount,
+    })),
+    activityCount,
+  });
+  return { ...score, targetJob: targetJob?.trim() || null };
 }
 
 export async function listResumes(userId: string) {

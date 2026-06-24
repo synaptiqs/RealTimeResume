@@ -2,30 +2,102 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Design tokens — PRD §7. Light is the default; .dark overrides. */
 :root {
-  --background: #ffffff;
-  --foreground: #0f172a;
+  --bg: #ffffff;
+  --surface: #f9f8f6;
+  --surface-2: #ebe8e2;
+  --text: #1c1917;
+  --text-2: #44403c;
+  --muted: #78716c;
+  --subtle: #a09890;
+  --disabled: #c2bdb6;
+  --border: #e5e1db;
+  --accent: #0d9488;
+  --accent-bg: #f0fdfa;
+  --upgrade: #d97706;
+  --danger: #dc2626;
+  --shadow-frame: 0 4px 40px rgba(0, 0, 0, 0.08);
+}
+
+.dark {
+  --bg: #111827;
+  --surface: #1f2937;
+  --surface-2: #374151;
+  --text: #f9fafb;
+  --text-2: #e5e7eb;
+  --muted: #9ca3af;
+  --subtle: #6b7280;
+  --disabled: #4b5563;
+  --border: rgba(255, 255, 255, 0.07);
+  --accent: #2dd4bf;
+  --accent-bg: rgba(45, 212, 191, 0.12);
+  --upgrade: #fbbf24;
+  --danger: #f87171;
+  --shadow-frame: 0 4px 48px rgba(0, 0, 0, 0.35);
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
+  color: var(--text);
+  background: var(--bg);
 }
 
 @layer components {
+  /* Buttons */
   .btn {
-    @apply inline-flex items-center justify-center rounded-md bg-brand-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-600 disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-1.5 rounded-[10px] bg-accent px-4 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50;
   }
   .btn-secondary {
-    @apply inline-flex items-center justify-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50;
+    @apply inline-flex items-center justify-center gap-1.5 rounded-[10px] border border-border bg-surface px-4 py-2.5 text-sm font-medium text-text-2 transition-colors hover:bg-surface-2 disabled:opacity-50;
   }
+  .btn-upgrade {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-[10px] bg-upgrade px-4 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50;
+  }
+
+  /* Forms */
   .input {
-    @apply w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500;
+    @apply w-full rounded-[10px] border border-border bg-bg px-3 py-2.5 text-sm text-text outline-none transition-colors placeholder:text-subtle focus:border-accent;
   }
   .label {
-    @apply mb-1 block text-sm font-medium text-slate-700;
+    @apply mb-1 block text-[11px] font-semibold uppercase tracking-[0.8px] text-subtle;
   }
+
+  /* Surfaces */
   .card {
-    @apply rounded-lg border border-slate-200 bg-white p-5 shadow-sm;
+    @apply rounded-card border border-border bg-surface p-4;
   }
+
+  /* Pills / tags */
+  .pill {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium;
+  }
+  .pro-badge {
+    @apply inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-upgrade;
+    background: color-mix(in srgb, var(--upgrade) 15%, transparent);
+  }
+  /* Translucent tints (opacity modifiers don't work on CSS-var colors). */
+  .tint-upgrade {
+    background: color-mix(in srgb, var(--upgrade) 12%, transparent);
+  }
+  .lock-chip {
+    background: color-mix(in srgb, var(--upgrade) 15%, transparent);
+  }
+  .overlay-bg {
+    background: color-mix(in srgb, var(--bg) 55%, transparent);
+  }
+
+  /* Bottom tab bar */
+  .tab-item {
+    @apply flex flex-1 flex-col items-center justify-center gap-0.5 border-t-2 border-transparent pt-2 text-[10px] font-semibold text-muted transition-colors;
+  }
+  .tab-item-active {
+    @apply border-accent text-accent;
+  }
+}
+
+/* Locked-feature blur preview (PRD §5) */
+.locked-blur {
+  filter: blur(4px);
+  pointer-events: none;
+  user-select: none;
 }

@@ -39,7 +39,7 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
         setError(data.error ?? "Something went wrong");
         return;
       }
-      router.push("/dashboard");
+      router.push(isRegister ? "/onboarding" : "/dashboard");
       router.refresh();
     } catch {
       setError("Network error. Please try again.");
@@ -49,11 +49,11 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
   }
 
   return (
-    <div className="mx-auto mt-16 max-w-md px-6">
-      <Link href="/" className="text-sm text-brand-600">
+    <div className="mx-auto mt-12 max-w-app px-6">
+      <Link href="/" className="text-sm text-accent">
         ← RealTimeResume
       </Link>
-      <h1 className="mt-4 text-2xl font-bold text-slate-900">
+      <h1 className="mt-4 font-serif text-2xl text-text">
         {isRegister ? "Create your account" : "Welcome back"}
       </h1>
 
@@ -121,7 +121,7 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
           </div>
         )}
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="text-sm text-danger">{error}</p>}
 
         <button type="submit" className="btn w-full" disabled={loading}>
           {loading
@@ -132,18 +132,18 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
         </button>
       </form>
 
-      <p className="mt-4 text-sm text-slate-600">
+      <p className="mt-4 text-sm text-muted">
         {isRegister ? (
           <>
             Already have an account?{" "}
-            <Link href="/login" className="text-brand-600">
+            <Link href="/login" className="text-accent">
               Log in
             </Link>
           </>
         ) : (
           <>
             New here?{" "}
-            <Link href="/register" className="text-brand-600">
+            <Link href="/register" className="text-accent">
               Create an account
             </Link>
           </>

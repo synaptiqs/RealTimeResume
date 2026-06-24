@@ -1,31 +1,40 @@
 # RealTimeResume
 
-Turn your daily activities into professional skills and a polished, ATS-friendly
-resume. Log what you do — studying, volunteering, side projects, work — capture
-the skills behind it, and generate a resume from your history.
+**Your life is your resume.** A mobile-first web app that turns everyday
+activities into professional skills and ATS-optimized resumes, built to the
+design handoff PRD (5 screens, light/dark, Free vs Pro).
 
-> **This version ships the core workflow with no AI integration.** Skill
-> suggestions come from a deterministic keyword dictionary (not AI), and resumes
-> are assembled from a template. AI-assisted features are a documented future
-> milestone (see [`PLAN.md`](./PLAN.md)).
+## App structure
 
-## Features (v1)
+Mobile-first responsive web app with a bottom tab bar — **Home · Log · Resume ·
+Profile** — plus an onboarding flow. Light/dark themes follow the OS by default
+with a manual override (Profile → Theme).
 
-- **Accounts** — email/password auth with hashed passwords and signed session cookies.
-- **Activity logging** — create, list, and delete activities.
-- **Skills** — tag activities with skills (manual), with optional keyword
-  suggestions; skills aggregate across activities with proficiency.
-- **Resume generation** — assemble a Markdown resume from your activities and
-  skills; keep multiple versions; copy to clipboard.
-- **Timesheet generation** — log hours (date, project, description) and generate
-  a timesheet report with totals by project; export as Markdown or CSV.
-- **Journal** — plain dated notes to capture achievements.
-- **AI resume structuring (free, narrow)** — Claude suggests how to order and
-  group your *existing* material into resume sections. It never rewrites your
-  content — that's the Pro feature.
-- **Full AI assistance (Pro / paywalled)** — AI rewriting and job-description
-  tailoring of a resume, gated behind `user.isPro` (returns HTTP 402 until
-  upgraded).
+| Screen | What it does |
+|---|---|
+| **Onboarding** | Pick a path (Recent Graduate / Career Changer / Return to Work / Freelancer-Pro) and see plan inclusions. |
+| **Home (Dashboard)** | Greeting, plan badge, stats (Skills/Activities/Score), Resume Strength ring, recent activity feed, FAB to log. |
+| **Log** | Capture an activity by text or voice (Pro), extract skills, review/accept, save. Free quota: 5 extractions/month. |
+| **Resume** | Resume Strength score per target job, top-skill bars, saved resumes, generate, AI structure (free) / AI enhance (Pro). |
+| **Profile** | Identity, stats, plan management (demo upgrade), theme toggle, settings, Journal/Timesheet tools, sign out. |
+
+## Features
+
+- **Accounts & onboarding** — email/password auth; path/persona selection.
+- **Activity logging** — text or **voice** (Pro, Web Speech API); deterministic
+  keyword skill extraction with an accept/edit review step; **5/month** free quota.
+- **Skills** — accrue across activities with proficiency (Proficient/Advanced/Expert).
+- **Resume generation** — ATS-friendly Markdown resumes, kept as versions.
+- **Resume Strength score** — deterministic 0–100 per target job, composed of
+  Skills match · ATS · Keywords · Format (Pro; locked/blurred on Free).
+- **Light/dark theming** — CSS-variable tokens from the PRD; OS-follow + override.
+- **Free vs Pro gating** — blurred locked previews + PRO tags, upgrade banners,
+  quotas; a **demo** upgrade toggle (`/api/billing`) flips `user.isPro` (no
+  payment processor yet — see roadmap).
+- **AI resume structuring (free)** — Claude suggests section ordering of your
+  *existing* material; never rewrites content.
+- **Full AI assistance (Pro)** — AI rewriting/tailoring, gated behind `isPro` (402).
+- **Timesheet & Journal** — secondary tools, reachable from Profile.
 
 > AI features use the Anthropic API and are optional: without `ANTHROPIC_API_KEY`
 > set, AI endpoints return a friendly "not available" message and the rest of the

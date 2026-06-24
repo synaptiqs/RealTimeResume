@@ -1,13 +1,37 @@
-import ResumeManager from "@/components/ResumeManager";
+import { requireUser } from "@/lib/auth";
+import { listResumes, getResumeStrength } from "@/lib/resume";
+import { getAggregatedSkills } from "@/lib/skills";
+import { proficiencyLabel, proficiencyPercent } from "@/lib/score";
+import ResumeBuilder from "@/components/ResumeBuilder";
 
-export default function ResumePage() {
+export default async function ResumePage() {
+  const user = await requireUser();
+  const [resumes, skills] = await Promise.all([
+    listResumes(user.id),
+    getAggregatedSkills(user.id),
+  ]);
+  const targetJob = resumes[0]?.targetJob ?? null;
+  const strength = await getResumeStrength(user.id, targetJob);
+
+  const topSkills = skills.slice(0, 3).map((s) => ({
+    name: s.name,
+    label: proficiencyLabel(s.proficiency),
+    percent: proficiencyPercent(s.proficiency),
+  }));
+
   return (
-    <div>
-      <h1 className="mb-1 text-2xl font-bold text-slate-900">Resume</h1>
-      <p className="mb-6 text-slate-600">
-        Generate and manage resume versions from your logged history.
-      </p>
-      <ResumeManager />
-    </div>
+    <ResumeBuilder
+      isPro={user.isPro}
+      initialResumes={resumes.map((r) => ({
+        id: r.id,
+        title: r.title,
+        targetJob: r.targetJob,
+        content: r.content,
+        score: r.score,
+        createdAt: r.createdAt.toISOString(),
+      }))}
+      topSkills={topSkills}
+      strength={strength}
+    />
   );
 }

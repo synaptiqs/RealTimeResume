@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
-import NavBar from "@/components/NavBar";
+import BottomTabBar from "@/components/BottomTabBar";
 
 export default async function AppLayout({
   children,
@@ -11,9 +11,9 @@ export default async function AppLayout({
   if (!user) redirect("/login");
 
   return (
-    <div className="min-h-screen">
-      <NavBar name={user.name || user.email} />
-      <main className="mx-auto max-w-5xl px-6 py-8">{children}</main>
+    <div className="mx-auto min-h-screen max-w-app bg-bg">
+      <main className="px-5 pb-24 pt-6">{children}</main>
+      <BottomTabBar />
     </div>
   );
 }

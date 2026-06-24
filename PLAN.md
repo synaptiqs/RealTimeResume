@@ -112,3 +112,28 @@ prisma/schema.prisma User, Activity, Skill, ActivitySkill, ResumeVersion, Journa
 5. Mobile (Expo/React Native) sharing the TypeScript core.
 6. Privacy & compliance: E2E encryption for journals, GDPR/COPPA, data export.
 7. PDF export, resume templates, job-targeted tailoring.
+
+## v2 — Design-handoff implementation (mobile redesign)
+
+Implemented the designer PRD in one pass on the existing Next.js stack:
+
+- **Mobile-first IA**: bottom tab bar (Home/Log/Resume/Profile) + onboarding;
+  centered `max-w-app` column scales to desktop.
+- **Theming**: CSS-variable design tokens (PRD §7) for light/dark, OS-follow with
+  a persisted manual override; IBM Plex Sans + DM Serif Display.
+- **Free vs Pro gating**: blurred locked previews + PRO tags, upgrade banners,
+  quotas. `user.isPro` drives it; `/api/billing` is a **demo** toggle (no payment
+  processor — Stripe checkout remains the next step to make Pro real).
+- **Resume Strength score**: deterministic per-target-job engine (`src/lib/score`)
+  — Skills match · ATS · Keywords · Format → 0–100; stored on each resume and
+  computed live for the dashboard/builder.
+- **Voice logging**: Web Speech API on the Log screen (Pro), text fallback.
+- **Monthly quota**: 5 free extractions/month (`src/lib/quota`).
+
+Folded the old desktop screens into the new IA (Activities → Log; Skills →
+Dashboard/Resume); Journal & Timesheet remain as Profile-linked tools.
+
+### Out of scope (per PRD §10) / next
+Real payment processor, AI journaling assistant, job-platform apply, multi-device
+sync internals, the marketing wiki. Settings rows (Edit Profile, Email
+Preferences, Data & Privacy, Export) are placeholders.

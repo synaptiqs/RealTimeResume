@@ -4,6 +4,7 @@ export interface NewActivity {
   title: string;
   description: string;
   occurredAt?: Date;
+  source?: "text" | "voice";
 }
 
 export async function createActivity(userId: string, data: NewActivity) {
@@ -12,6 +13,7 @@ export async function createActivity(userId: string, data: NewActivity) {
       userId,
       title: data.title.trim(),
       description: data.description.trim(),
+      source: data.source ?? "text",
       occurredAt: data.occurredAt ?? new Date(),
     },
   });

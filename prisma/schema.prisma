@@ -32,6 +32,7 @@ model Activity {
   userId      String
   title       String
   description String
+  source      String   @default("text") // text | voice
   occurredAt  DateTime @default(now())
   createdAt   DateTime @default(now())
 
@@ -73,8 +74,15 @@ model ResumeVersion {
   id         String   @id @default(cuid())
   userId     String
   title      String
-  targetRole String?
+  targetRole String? // legacy alias of targetJob
+  targetJob  String?
   content    String // Markdown
+  // Resume Strength score (0-100) and its component metrics (PRD §4).
+  score       Int?
+  skillsMatch Int?
+  ats         Int?
+  keywords    Int?
+  format      Int?
   createdAt  DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
