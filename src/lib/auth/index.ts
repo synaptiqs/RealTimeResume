@@ -15,6 +15,7 @@ export interface AuthUser {
   email: string;
   name: string | null;
   goal: string | null;
+  isPro: boolean;
 }
 
 /** Register a new user. Throws if the email is already taken. */
@@ -38,7 +39,13 @@ export async function registerUser(params: {
       goal: params.goal || null,
     },
   });
-  return { id: user.id, email: user.email, name: user.name, goal: user.goal };
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    goal: user.goal,
+    isPro: user.isPro,
+  };
 }
 
 /** Verify credentials. Returns the user or null on bad credentials. */
@@ -51,7 +58,13 @@ export async function authenticate(
   if (!user) return null;
   const ok = await verifyPassword(password, user.passwordHash);
   if (!ok) return null;
-  return { id: user.id, email: user.email, name: user.name, goal: user.goal };
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    goal: user.goal,
+    isPro: user.isPro,
+  };
 }
 
 /** Issue a session cookie for the given user. */
@@ -79,7 +92,13 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
   if (!session) return null;
   const user = await prisma.user.findUnique({ where: { id: session.userId } });
   if (!user) return null;
-  return { id: user.id, email: user.email, name: user.name, goal: user.goal };
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    goal: user.goal,
+    isPro: user.isPro,
+  };
 }
 
 /** Throw if not authenticated; otherwise return the user. */

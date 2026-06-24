@@ -17,6 +17,7 @@ model User {
   passwordHash String
   name         String?
   goal         String? // recent-grad | career-change | returning-parent | level-up
+  isPro        Boolean  @default(false) // unlocks full AI assistance (paywall)
   createdAt    DateTime @default(now())
 
   activities  Activity[]

@@ -20,9 +20,18 @@ the skills behind it, and generate a resume from your history.
 - **Timesheet generation** — log hours (date, project, description) and generate
   a timesheet report with totals by project; export as Markdown or CSV.
 - **Journal** — plain dated notes to capture achievements.
+- **AI resume structuring (free, narrow)** — Claude suggests how to order and
+  group your *existing* material into resume sections. It never rewrites your
+  content — that's the Pro feature.
+- **Full AI assistance (Pro / paywalled)** — AI rewriting and job-description
+  tailoring of a resume, gated behind `user.isPro` (returns HTTP 402 until
+  upgraded).
 
-> AI-assisted versions of these (skill extraction, journaling assistant, AI
-> resume/timesheet writing) are planned for a later update behind a paid tier.
+> AI features use the Anthropic API and are optional: without `ANTHROPIC_API_KEY`
+> set, AI endpoints return a friendly "not available" message and the rest of the
+> app works unchanged. Skill suggestion and resume/timesheet generation are
+> deterministic (no AI). Broader AI (skill extraction, journaling assistant) is
+> planned behind the same paywall in a later update.
 
 ## Tech stack
 

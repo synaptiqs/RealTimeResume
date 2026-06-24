@@ -13,17 +13,20 @@
 | v1 scope | **Web MVP first** (mobile later) |
 | Stack | **Next.js 15 + TypeScript + Tailwind**, Prisma + SQLite (→ Postgres in prod) |
 | Auth | Session cookies, `bcryptjs` password hashing, `jose`-signed JWT |
-| **AI** | **Excluded from this version.** No LLM/Claude integration. Skill suggestion is a deterministic keyword dictionary; resume/timesheet generation is template-based. **Enhanced AI features ship in a later update behind a paywall**, once engagement is gauged. |
+| **AI** | **Narrow AI only.** A single Claude-powered feature — resume *structuring* (suggests section order/grouping of existing material; never rewrites content) — is free for all users. Skill suggestion and resume/timesheet generation remain deterministic/template-based. **Full AI assistance (rewriting & tailoring) is gated behind a paywall** (`user.isPro`), returning HTTP 402 until upgraded. |
 | Hosting | **AWS** (App Runner + RDS PostgreSQL); domain registered via **Bluehost** (DNS → AWS). See `DEPLOY.md`. |
 | How far now | **Build v1 end-to-end with tests, then push** |
 
 ## Phasing
 
 - **Phase 0 (this version):** manual, deterministic tooling — activity tracking,
-  skills, resume generation, **timesheet generation**, and journaling notes. Free.
-- **Next update:** enhanced AI features (AI skill extraction, journaling
-  assistant, AI resume/timesheet writing) **behind a paywall**, added behind the
-  existing interfaces after measuring engagement.
+  skills, resume generation, **timesheet generation**, and journaling notes —
+  plus one **narrow, free AI feature: resume structuring**. Free.
+- **Paywall (this version):** **full AI assistance** (AI resume rewriting &
+  job-description tailoring) is implemented behind `user.isPro` and returns 402
+  until upgraded. Billing/checkout to flip `isPro` is the next step.
+- **Next update:** broaden AI behind the paywall (AI skill extraction,
+  journaling assistant, AI timesheet writing) after measuring engagement.
 
 ## What v1 (this slice) delivers — no enhanced AI
 
@@ -98,9 +101,11 @@ prisma/schema.prisma User, Activity, Skill, ActivitySkill, ResumeVersion, Journa
 
 ## Roadmap beyond v1
 
-1. **Enhanced AI (deferred, behind a paywall):** Claude-powered skill
-   extraction, journaling assistant, and resume/timesheet writing behind the
-   existing interfaces — gated as a paid tier after gauging engagement.
+1. **Monetize the paywall:** add checkout (e.g. Stripe) to set `user.isPro`, so
+   the already-built full-AI endpoint (`/api/ai/enhance`) unlocks on payment.
+2. **Broaden paid AI:** Claude-powered skill extraction, journaling assistant,
+   and AI timesheet writing behind the same `isPro` gate, after gauging
+   engagement with the free narrow structuring feature.
 2. Real-time sync (websockets / SSE) and optimistic UI.
 3. Voice input + the 30-second logging flow from the wiki.
 4. Job-board integrations (ZipRecruiter / Indeed / LinkedIn).

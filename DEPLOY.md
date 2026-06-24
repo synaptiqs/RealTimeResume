@@ -49,6 +49,10 @@ Put these in **AWS Secrets Manager** (or App Runner env vars for a quick start):
   ```bash
   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
   ```
+- `ANTHROPIC_API_KEY` — *(optional)* enables the AI features (resume structuring
+  and the paywalled full-AI assistance). Omit it and AI endpoints return a
+  graceful "not available" message; everything else works. Get a key at
+  <https://console.anthropic.com/>.
 
 ## 3. Build and push the image to ECR
 
